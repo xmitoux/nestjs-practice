@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AqoursMembersController } from '../../src/modules/aqours_members/aqours_members.controller';
-import { AqoursMembersService } from '../../src/modules/aqours_members/aqours_members.service';
+import { AqoursMembersController } from '@/modules/aqours_members/aqours_members.controller';
+import { AqoursMembersService } from '@/modules/aqours_members/aqours_members.service';
 
 describe('AqoursMembersController', () => {
     let controller: AqoursMembersController;
