@@ -45,17 +45,17 @@ export class AqoursMembersController {
         return this.aqoursMembersService.findAll();
     }
 
-    @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: string) {
-        return this.aqoursMembersService.findOne(+id);
-    }
-
-    @Get()
+    @Get('by-ids')
     findByIds(
         @Query('ids', new ParseArrayPipe({ items: Number, separator: ',' }))
         ids: number[],
     ): AqoursMember[] {
         return this.aqoursMembersService.findByIds(ids);
+    }
+
+    @Get(':id')
+    findOne(@Param('id', ParseIntPipe) id: string) {
+        return this.aqoursMembersService.findOne(+id);
     }
 
     @Patch(':id')
