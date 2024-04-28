@@ -40,7 +40,7 @@ export class AqoursMembersController {
     }
 
     @Get()
-    findAll(@Res({ passthrough: true }) res: Response) {
+    findAll(@Res({ passthrough: true }) res: Response): AqoursMember[] {
         res.status(HttpStatus.OK);
         return this.aqoursMembersService.findAll();
     }
@@ -54,8 +54,9 @@ export class AqoursMembersController {
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: string) {
-        return this.aqoursMembersService.findOne(+id);
+    findOne(@Param('id', ParseIntPipe) id: string): AqoursMember | undefined {
+        const member = this.aqoursMembersService.findOne(+id);
+        return member;
     }
 
     @Patch(':id')

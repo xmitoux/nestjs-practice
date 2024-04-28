@@ -17,10 +17,10 @@ export class AqoursMembersService {
 
     addIdToNewMember(createAqoursMemberDto: CreateAqoursMemberDto): AqoursMember {
         const id = this.members.length + 1;
-        const member: AqoursMember = {
+        const member = new AqoursMember({
             id,
             ...createAqoursMemberDto,
-        };
+        });
 
         return member;
     }
@@ -33,15 +33,18 @@ export class AqoursMembersService {
     }
 
     findAll(): AqoursMember[] {
-        return this.members;
+        return this.members.map((member) => new AqoursMember(member));
     }
 
     findOne(id: number): AqoursMember | undefined {
-        return this.members.find((member) => member.id === id);
+        const member = this.members.find((member) => member.id === id);
+        if (member) {
+            return new AqoursMember(member);
+        }
     }
 
     findByIds(ids: number[]): AqoursMember[] {
-        return this.members.filter((member) => ids.includes(member.id));
+        return this.members.filter((member) => ids.includes(member.id)).map((member) => new AqoursMember(member));
     }
 
     update(id: number, updateAqoursMemberDto: UpdateAqoursMemberDto) {
