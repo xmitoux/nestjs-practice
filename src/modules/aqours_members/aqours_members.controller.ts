@@ -11,11 +11,12 @@ import {
     ParseIntPipe,
     ParseArrayPipe,
 } from '@nestjs/common';
+import { Query } from '@nestjs/common/decorators';
+import { Response } from 'express';
+
 import { AqoursMembersService } from './aqours_members.service';
 import { CreateAqoursMemberDto } from './dto/create-aqours_member.dto';
 import { UpdateAqoursMemberDto } from './dto/update-aqours_member.dto';
-import { Response } from 'express';
-import { Query } from '@nestjs/common/decorators';
 import { AqoursMember } from './entities/aqours_member.entity';
 
 @Controller('aqours-members')

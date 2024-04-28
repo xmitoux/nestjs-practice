@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AqoursMembersService } from './aqours_members.service';
+
 import { AqoursMembersController } from './aqours_members.controller';
+import { AqoursMembersService } from './aqours_members.service';
 
 @Module({
-  controllers: [AqoursMembersController],
-  providers: [AqoursMembersService],
+    controllers: [AqoursMembersController],
+    providers: [AqoursMembersService],
 })
 export class AqoursMembersModule {}

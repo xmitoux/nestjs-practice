@@ -1,8 +1,8 @@
 module.exports = {
     env: {
-        node: true,
-        jest: true,
         es2021: true,
+        jest: true,
+        node: true,
     },
     extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
     overrides: [
@@ -21,18 +21,32 @@ module.exports = {
         parser: '@typescript-eslint/parser',
         sourceType: 'module',
     },
-    plugins: ['@typescript-eslint'],
+    plugins: ['@typescript-eslint', 'import', 'sort-keys-fix', 'typescript-sort-keys', 'unused-imports'],
     root: true,
     rules: {
-        'array-callback-return': ['error', { checkForEach: true }],
         '@typescript-eslint/no-unused-vars': [
             'warn',
             {
                 argsIgnorePattern: '^_',
-                varsIgnorePattern: '^_',
                 caughtErrorsIgnorePattern: '^_',
                 destructuredArrayIgnorePattern: '^_',
+                varsIgnorePattern: '^_',
             },
         ],
+        'array-callback-return': ['error', { checkForEach: true }],
+        'import/no-duplicates': 'error',
+        'import/order': [
+            'error',
+            {
+                alphabetize: {
+                    order: 'asc',
+                },
+                groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
+                'newlines-between': 'always',
+            },
+        ],
+        'sort-keys-fix/sort-keys-fix': 'error',
+        'typescript-sort-keys/interface': 'error',
+        'unused-imports/no-unused-imports': 'error',
     },
 };
