@@ -36,7 +36,7 @@ module.exports = {
         'array-callback-return': ['error', { checkForEach: true }],
         'import/no-duplicates': 'error',
         'import/order': [
-            'error',
+            'warn',
             {
                 alphabetize: {
                     order: 'asc',
@@ -45,8 +45,8 @@ module.exports = {
                 'newlines-between': 'always',
             },
         ],
-        'sort-keys-fix/sort-keys-fix': 'error',
-        'typescript-sort-keys/interface': 'error',
-        'unused-imports/no-unused-imports': 'error',
+        'sort-keys-fix/sort-keys-fix': 'warn',
+        'typescript-sort-keys/interface': 'warn',
+        'unused-imports/no-unused-imports': 'warn',
     },
 };
