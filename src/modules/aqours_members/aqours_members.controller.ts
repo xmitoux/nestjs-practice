@@ -54,18 +54,18 @@ export class AqoursMembersController {
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: string): AqoursMember | undefined {
-        const member = this.aqoursMembersService.findOne(+id);
+    findOne(@Param('id', ParseIntPipe) id: number): AqoursMember | undefined {
+        const member = this.aqoursMembersService.findOne(id);
         return member;
     }
 
     @Patch(':id')
-    update(@Param('id', ParseIntPipe) id: string, @Body() updateAqoursMemberDto: UpdateAqoursMemberDto) {
-        return this.aqoursMembersService.update(+id, updateAqoursMemberDto);
+    update(@Param('id', ParseIntPipe) id: number, @Body() updateAqoursMemberDto: UpdateAqoursMemberDto) {
+        return this.aqoursMembersService.update(id, updateAqoursMemberDto);
     }
 
     @Delete(':id')
-    remove(@Param('id', ParseIntPipe) id: string) {
-        return this.aqoursMembersService.remove(+id);
+    remove(@Param('id', ParseIntPipe) id: number) {
+        return this.aqoursMembersService.remove(id);
     }
 }
