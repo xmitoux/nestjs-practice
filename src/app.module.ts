@@ -5,10 +5,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { AqoursMembersModule } from '@/modules/aqours_members/aqours_members.module';
+import { PostsModule } from '@/modules/posts/posts.module';
+import { UsersModule } from '@/modules/users/users.module';
 
 @Module({
     controllers: [AppController],
-    imports: [ConfigModule.forRoot(), AqoursMembersModule],
+    imports: [ConfigModule.forRoot(), AqoursMembersModule, UsersModule, PostsModule],
     providers: [AppService],
 })
 export class AppModule {}
