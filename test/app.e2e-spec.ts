@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
+// https://docs.nestjs.com/recipes/swc#update-imports-in-e2e-tests
+import request from 'supertest';
 
 import { AppModule } from '@/app.module';
 

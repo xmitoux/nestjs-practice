@@ -6,13 +6,11 @@ import {
     Patch,
     Param,
     Delete,
-    Res,
     HttpStatus,
     ParseIntPipe,
     ParseArrayPipe,
 } from '@nestjs/common';
-import { Query } from '@nestjs/common/decorators';
-import { Response } from 'express';
+import { HttpCode, Query } from '@nestjs/common/decorators';
 
 import { AqoursMembersService } from './aqours_members.service';
 import { CreateAqoursMemberDto } from './dto/create-aqours_member.dto';
@@ -24,8 +22,8 @@ export class AqoursMembersController {
     constructor(private readonly aqoursMembersService: AqoursMembersService) {}
 
     @Post()
-    create(@Body() createAqoursMemberDto: CreateAqoursMemberDto, @Res({ passthrough: true }) res: Response) {
-        res.status(HttpStatus.CREATED);
+    @HttpCode(HttpStatus.CREATED)
+    create(@Body() createAqoursMemberDto: CreateAqoursMemberDto) {
         return this.aqoursMembersService.create(createAqoursMemberDto);
     }
 
@@ -33,15 +31,12 @@ export class AqoursMembersController {
     createBulk(
         @Body(new ParseArrayPipe({ items: CreateAqoursMemberDto }))
         createAqoursMemberDtos: CreateAqoursMemberDto[],
-        @Res({ passthrough: true }) res: Response,
     ) {
-        res.status(HttpStatus.CREATED);
         return this.aqoursMembersService.createBulk(createAqoursMemberDtos);
     }
 
     @Get()
-    findAll(@Res({ passthrough: true }) res: Response): AqoursMember[] {
-        res.status(HttpStatus.OK);
+    findAll(): AqoursMember[] {
         return this.aqoursMembersService.findAll();
     }
 
