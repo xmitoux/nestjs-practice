@@ -29,11 +29,10 @@ export class UsersService {
         });
     }
 
-    async updateUser(params: { data: Prisma.UserUpdateInput; where: Prisma.UserWhereUniqueInput }): Promise<User> {
-        const { where, data } = params;
+    async update(id: number, data: Prisma.UserUpdateInput): Promise<User> {
         return this.prisma.user.update({
             data,
-            where,
+            where: { id },
         });
     }
 

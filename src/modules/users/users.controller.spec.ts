@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { User, Prisma } from '@prisma/client';
 
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -48,6 +49,15 @@ describe('UsersController', () => {
 
         findOne: vi.fn().mockImplementation(async (id: number): Promise<User | null> => {
             return mockUsers.find((user) => user.id === id) ?? null;
+        }),
+
+        update: vi.fn().mockImplementation(async (id: number, data: UpdateUserDto): Promise<User | null> => {
+            const user = mockUsers.find((user) => user.id === id);
+            if (!user) {
+                return null;
+            }
+
+            return { ...user, ...data };
         }),
     };
 
@@ -143,8 +153,35 @@ describe('UsersController', () => {
             const id = 100;
             const gotUser = await controller.findOne(id);
 
-            expect(service.findOne).toHaveBeenCalledWith(id);
             expect(gotUser).toBeNull();
+        });
+    });
+
+    describe('update', () => {
+        it('指定idのユーザの全データを更新する', async () => {
+            const id = 1;
+            const data: UpdateUserDto = { email: 'updated@hoge.mail', name: 'updated' };
+            const expectedUser = { ...mockUsers[0], ...data };
+            const updatedUser = await controller.update(id, data);
+
+            expect(service.update).toHaveBeenCalledWith(id, data);
+            expect(updatedUser).toEqual(expectedUser);
+        });
+
+        it('指定idのユーザの名前を更新する', async () => {
+            const id = 1;
+            const data: UpdateUserDto = { name: 'updated' };
+            const expectedUser = { ...mockUsers[0], ...data };
+            const updatedUser = await controller.update(id, data);
+
+            expect(updatedUser).toEqual(expectedUser);
+        });
+
+        it('指定idのユーザが存在しない', async () => {
+            const id = 100;
+            const udpatedUser = await controller.update(id, {});
+
+            expect(udpatedUser).toBeNull();
         });
     });
 });

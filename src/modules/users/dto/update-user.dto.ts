@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateUserDto } from './create-user.dto';
+import { Prisma } from '@prisma/client';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto implements Prisma.UserUpdateInput {
+    @IsString()
+    @IsOptional()
+    name?: string;
+
+    @IsEmail()
+    @IsOptional()
+    email?: string;
+}
