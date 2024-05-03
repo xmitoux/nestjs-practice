@@ -11,6 +11,12 @@ describe('UsersController', () => {
     let controller: UsersController;
     let service: UsersService;
 
+    const mockUsers: User[] = [
+        { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' },
+        { email: 'fuga@yahoo.com', id: 2, name: '高海千歌' },
+        { email: 'foo@gmail.com', id: 3, name: '渡辺曜' },
+    ];
+
     // モック化するサービスの関数
     const mockService = {
         // 関数名はサービスと同じにする
@@ -26,12 +32,6 @@ describe('UsersController', () => {
             .fn()
             .mockImplementation(async (params: { orderBy?: Prisma.SortOrder; where?: string }): Promise<User[]> => {
                 const { orderBy, where } = params;
-                const mockUsers: User[] = [
-                    { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' },
-                    { email: 'fuga@yahoo.com', id: 2, name: '高海千歌' },
-                    { email: 'foo@gmail.com', id: 3, name: '渡辺曜' },
-                ];
-
                 let users = [...mockUsers];
 
                 if (where) {
@@ -47,11 +47,6 @@ describe('UsersController', () => {
             }),
 
         findOne: vi.fn().mockImplementation(async (id: number): Promise<User | null> => {
-            const mockUsers: User[] = [
-                { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' },
-                { email: 'fuga@yahoo.com', id: 2, name: '高海千歌' },
-                { email: 'foo@gmail.com', id: 3, name: '渡辺曜' },
-            ];
             return mockUsers.find((user) => user.id === id) ?? null;
         }),
     };
@@ -81,7 +76,7 @@ describe('UsersController', () => {
     describe('signup user', () => {
         it('should create new user', async () => {
             // 期待するユーザデータの返り値
-            const expectedUser: User = { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' };
+            const expectedUser = mockUsers[0];
             // idを除外してテストデータ化
             const { id: _, ...postUser } = expectedUser;
             // コントローラを実行
@@ -126,11 +121,7 @@ describe('UsersController', () => {
         it('クエリなし', async () => {
             const orderBy = undefined;
             const where = undefined;
-            const expectedUsers: User[] = [
-                { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' },
-                { email: 'fuga@yahoo.com', id: 2, name: '高海千歌' },
-                { email: 'foo@gmail.com', id: 3, name: '渡辺曜' },
-            ];
+            const expectedUsers = mockUsers;
 
             const gotUsers = await controller.findAll(where, orderBy);
 
@@ -140,7 +131,7 @@ describe('UsersController', () => {
 
     describe('findOne', () => {
         it('指定idのユーザが存在する', async () => {
-            const expectedUser: User = { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' };
+            const expectedUser = mockUsers[0];
             const id = 1;
             const gotUser = await controller.findOne(id);
 
