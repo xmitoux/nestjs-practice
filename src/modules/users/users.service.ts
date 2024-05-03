@@ -13,24 +13,17 @@ export class UsersService {
         });
     }
 
-    async users(params: {
-        cursor?: Prisma.UserWhereUniqueInput;
-        orderBy?: Prisma.UserOrderByWithRelationInput;
-        skip?: number;
-        take?: number;
-        where?: Prisma.UserWhereInput;
-    }): Promise<User[]> {
-        const { skip, take, cursor, where, orderBy } = params;
+    async findAll(params: { orderBy?: Prisma.SortOrder; where?: string }): Promise<User[]> {
+        const { where, orderBy } = params;
         return this.prisma.user.findMany({
-            cursor,
-            orderBy,
-            skip,
-            take,
-            where,
+            orderBy: { id: orderBy },
+            where: {
+                email: { endsWith: where },
+            },
         });
     }
 
-    async createUser(data: Prisma.UserCreateInput): Promise<User> {
+    async create(data: Prisma.UserCreateInput): Promise<User> {
         return this.prisma.user.create({
             data,
         });
