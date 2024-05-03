@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { User, Prisma } from '@prisma/client';
 
+import { CreateUserDto } from './dto/create-user.dto';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -72,11 +73,10 @@ describe('UsersController', () => {
         it('should create new user', async () => {
             // 期待するユーザデータの返り値
             const expectedUser: User = { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' };
-
             // idを除外してテストデータ化
             const { id: _, ...postUser } = expectedUser;
             // コントローラを実行
-            const createdUser = await controller.create(postUser);
+            const createdUser = await controller.create(postUser as CreateUserDto);
 
             // コントローラ内でサービスの関数が実行されたか(実際に動くのはモック)
             expect(service.create).toHaveBeenCalled();
