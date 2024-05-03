@@ -45,6 +45,15 @@ describe('UsersController', () => {
                 }
                 return users;
             }),
+
+        findOne: vi.fn().mockImplementation(async (id: number): Promise<User | null> => {
+            const mockUsers: User[] = [
+                { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' },
+                { email: 'fuga@yahoo.com', id: 2, name: '高海千歌' },
+                { email: 'foo@gmail.com', id: 3, name: '渡辺曜' },
+            ];
+            return mockUsers.find((user) => user.id === id) ?? null;
+        }),
     };
 
     beforeEach(async () => {
@@ -126,6 +135,25 @@ describe('UsersController', () => {
             const gotUsers = await controller.findAll(where, orderBy);
 
             expect(gotUsers).toEqual(expectedUsers);
+        });
+    });
+
+    describe('findOne', () => {
+        it('指定idのユーザが存在する', async () => {
+            const expectedUser: User = { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' };
+            const id = 1;
+            const gotUser = await controller.findOne(id);
+
+            expect(service.findOne).toHaveBeenCalledWith(id);
+            expect(gotUser).toEqual(expectedUser);
+        });
+
+        it('指定idのユーザが存在しない', async () => {
+            const id = 100;
+            const gotUser = await controller.findOne(id);
+
+            expect(service.findOne).toHaveBeenCalledWith(id);
+            expect(gotUser).toBeNull();
         });
     });
 });

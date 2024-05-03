@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Param } from '@nestjs/common';
 import { Prisma, User as UserModel } from '@prisma/client';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,5 +22,10 @@ export class UsersController {
             orderBy,
             where,
         });
+    }
+
+    @Get(':id')
+    async findOne(@Param('id') id: number): Promise<UserModel | null> {
+        return this.usersService.findOne(id);
     }
 }
