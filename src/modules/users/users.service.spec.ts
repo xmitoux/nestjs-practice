@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { PrismaService } from 'nestjs-prisma';
 import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+
+import { PrismaService } from '@/common/services/prisma.service';
 
 describe('UsersService', () => {
     let service: UsersService;
