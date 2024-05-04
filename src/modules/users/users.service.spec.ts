@@ -36,7 +36,7 @@ describe('UsersService', () => {
             const id = 1;
 
             await service.findOne(id);
-            expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+            expect(prismaMock.user.findUniqueOrThrow).toHaveBeenCalledWith({
                 where: { id },
             });
         });

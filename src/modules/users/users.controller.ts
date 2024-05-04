@@ -29,7 +29,7 @@ export class UsersController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: number): Promise<UserEntity | null> {
+    async findOne(@Param('id') id: number): Promise<UserEntity> {
         return new UserEntity(await this.usersService.findOne(id));
     }
 
