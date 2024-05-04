@@ -62,7 +62,7 @@ describe('UsersController', () => {
 
     it('findOne', async () => {
         const id = 1;
-        await controller.findOne(id);
+        await controller.findOne({ id });
 
         expect(service.findOne).toHaveBeenCalledWith(id);
     });
@@ -70,7 +70,7 @@ describe('UsersController', () => {
     it('update', async () => {
         const id = 1;
         const data: UpdateUserDto = { email: 'updated@hoge.mail', name: 'updated' };
-        await controller.update(id, data);
+        await controller.update({ id }, data);
 
         expect(service.update).toHaveBeenCalledWith(id, data);
     });

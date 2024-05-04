@@ -6,6 +6,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
 
+import { FindOneParam } from '@/common/dto/find-one-param.dto';
+
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
@@ -29,12 +31,12 @@ export class UsersController {
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: number): Promise<UserEntity> {
+    async findOne(@Param() { id }: FindOneParam): Promise<UserEntity> {
         return new UserEntity(await this.usersService.findOne(id));
     }
 
     @Patch(':id')
-    async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto): Promise<UserEntity | null> {
+    async update(@Param() { id }: FindOneParam, @Body() updateUserDto: UpdateUserDto): Promise<UserEntity> {
         return new UserEntity(await this.usersService.update(id, updateUserDto));
     }
 }

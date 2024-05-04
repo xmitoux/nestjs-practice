@@ -8,7 +8,14 @@ import { PrismaClientExceptionFilter } from './common/filters/prisma-client-exce
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    app.useGlobalPipes(new ValidationPipe({ forbidNonWhitelisted: true, transform: true, whitelist: true }));
+    app.useGlobalPipes(
+        new ValidationPipe({
+            forbidNonWhitelisted: true,
+            transform: true,
+            transformOptions: { enableImplicitConversion: true },
+            whitelist: true,
+        }),
+    );
     app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
     const { httpAdapter } = app.get(HttpAdapterHost);
