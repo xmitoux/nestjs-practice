@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { User, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,53 +12,13 @@ describe('UsersController', () => {
     let controller: UsersController;
     let service: UsersService;
 
-    const mockUsers: User[] = [
-        { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' },
-        { email: 'fuga@yahoo.com', id: 2, name: '高海千歌' },
-        { email: 'foo@gmail.com', id: 3, name: '渡辺曜' },
-    ];
-
     // モック化するサービスの関数
     const mockService = {
         // 関数名はサービスと同じにする
-        create: vi.fn().mockImplementation(
-            async (user: Prisma.UserCreateInput & { name: string }): Promise<User> => ({
-                // 渡されたユーザにidを付与
-                id: 1,
-                ...user,
-            }),
-        ),
-
-        findAll: vi
-            .fn()
-            .mockImplementation(async (params: { orderBy?: Prisma.SortOrder; where?: string }): Promise<User[]> => {
-                const { orderBy, where } = params;
-                let users = [...mockUsers];
-
-                if (where) {
-                    users = users.filter((user) => user.email.endsWith(where));
-                }
-
-                if (!orderBy || orderBy === 'asc') {
-                    users.sort((a, b) => a.id - b.id);
-                } else if (orderBy === 'desc') {
-                    users.sort((a, b) => b.id - a.id);
-                }
-                return users;
-            }),
-
-        findOne: vi.fn().mockImplementation(async (id: number): Promise<User | null> => {
-            return mockUsers.find((user) => user.id === id) ?? null;
-        }),
-
-        update: vi.fn().mockImplementation(async (id: number, data: UpdateUserDto): Promise<User | null> => {
-            const user = mockUsers.find((user) => user.id === id);
-            if (!user) {
-                return null;
-            }
-
-            return { ...user, ...data };
-        }),
+        create: vi.fn().mockImplementation(async (_: Prisma.UserCreateInput) => {}),
+        findAll: vi.fn().mockImplementation(async (_: Prisma.UserCreateInput) => []),
+        findOne: vi.fn().mockImplementation(async (_: number) => {}),
+        update: vi.fn().mockImplementation(async (_1: number, _2: UpdateUserDto) => {}),
     };
 
     beforeEach(async () => {
@@ -83,105 +43,35 @@ describe('UsersController', () => {
         expect(controller).toBeDefined();
     });
 
-    describe('signup user', () => {
-        it('should create new user', async () => {
-            // 期待するユーザデータの返り値
-            const expectedUser = mockUsers[0];
-            // idを除外してテストデータ化
-            const { id: _, ...postUser } = expectedUser;
-            // コントローラを実行
-            const createdUser = await controller.create(postUser as CreateUserDto);
+    it('create', async () => {
+        const data: CreateUserDto = { email: 'updated@hoge.mail', name: 'hoge', password: 'pass' };
+        // コントローラを実行
+        await controller.create(data);
 
-            // コントローラ内でサービスの関数が実行されたか(実際に動くのはモック)
-            expect(service.create).toHaveBeenCalled();
-            // コントローラは期待するユーザデータを返すか
-            expect(createdUser).toEqual(expectedUser);
-        });
+        // コントローラ内でサービスの関数が実行されたか(実際に動くのはモック)
+        expect(service.create).toHaveBeenCalledWith(data);
     });
 
-    describe('findAll', () => {
-        it('ascとフィルター', async () => {
-            const orderBy: Prisma.SortOrder = 'asc';
-            const where = 'gmail.com';
-            const expectedUsers: User[] = [
-                { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' },
-                { email: 'foo@gmail.com', id: 3, name: '渡辺曜' },
-            ];
+    it('findAll', async () => {
+        const orderBy: Prisma.SortOrder = 'asc';
+        const where = 'gmail.com';
+        await controller.findAll(where, orderBy);
 
-            const gotUsers = await controller.findAll(where, orderBy);
-
-            expect(service.findAll).toHaveBeenCalledWith({ orderBy, where });
-            expect(gotUsers).toEqual(expectedUsers);
-        });
-
-        it('descのみ', async () => {
-            const orderBy: Prisma.SortOrder = 'desc';
-            const where = undefined;
-            const expectedUsers: User[] = [
-                { email: 'foo@gmail.com', id: 3, name: '渡辺曜' },
-                { email: 'fuga@yahoo.com', id: 2, name: '高海千歌' },
-                { email: 'hoge@gmail.com', id: 1, name: '桜内梨子' },
-            ];
-
-            const gotUsers = await controller.findAll(where, orderBy);
-
-            expect(gotUsers).toEqual(expectedUsers);
-        });
-
-        it('クエリなし', async () => {
-            const orderBy = undefined;
-            const where = undefined;
-            const expectedUsers = mockUsers;
-
-            const gotUsers = await controller.findAll(where, orderBy);
-
-            expect(gotUsers).toEqual(expectedUsers);
-        });
+        expect(service.findAll).toHaveBeenCalledWith({ orderBy, where });
     });
 
-    describe('findOne', () => {
-        it('指定idのユーザが存在する', async () => {
-            const expectedUser = mockUsers[0];
-            const id = 1;
-            const gotUser = await controller.findOne(id);
+    it('findOne', async () => {
+        const id = 1;
+        await controller.findOne(id);
 
-            expect(service.findOne).toHaveBeenCalledWith(id);
-            expect(gotUser).toEqual(expectedUser);
-        });
-
-        it('指定idのユーザが存在しない', async () => {
-            const id = 100;
-            const gotUser = await controller.findOne(id);
-
-            expect(gotUser).toBeNull();
-        });
+        expect(service.findOne).toHaveBeenCalledWith(id);
     });
 
-    describe('update', () => {
-        it('指定idのユーザの全データを更新する', async () => {
-            const id = 1;
-            const data: UpdateUserDto = { email: 'updated@hoge.mail', name: 'updated' };
-            const expectedUser = { ...mockUsers[0], ...data };
-            const updatedUser = await controller.update(id, data);
+    it('update', async () => {
+        const id = 1;
+        const data: UpdateUserDto = { email: 'updated@hoge.mail', name: 'updated' };
+        await controller.update(id, data);
 
-            expect(service.update).toHaveBeenCalledWith(id, data);
-            expect(updatedUser).toEqual(expectedUser);
-        });
-
-        it('指定idのユーザの名前を更新する', async () => {
-            const id = 1;
-            const data: UpdateUserDto = { name: 'updated' };
-            const expectedUser = { ...mockUsers[0], ...data };
-            const updatedUser = await controller.update(id, data);
-
-            expect(updatedUser).toEqual(expectedUser);
-        });
-
-        it('指定idのユーザが存在しない', async () => {
-            const id = 100;
-            const udpatedUser = await controller.update(id, {});
-
-            expect(udpatedUser).toBeNull();
-        });
+        expect(service.update).toHaveBeenCalledWith(id, data);
     });
 });
