@@ -6,8 +6,8 @@ import { PrismaService } from 'nestjs-prisma';
 export class UsersService {
     constructor(private prisma: PrismaService) {}
 
-    async findOne(id: number): Promise<User | null> {
-        return this.prisma.user.findUnique({
+    async findOne(id: number): Promise<User> {
+        return this.prisma.user.findUniqueOrThrow({
             where: { id },
         });
     }
