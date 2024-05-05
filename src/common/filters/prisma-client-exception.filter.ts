@@ -1,10 +1,12 @@
-import { ArgumentsHost, Catch, HttpStatus } from '@nestjs/common';
+import { ArgumentsHost, Catch, HttpStatus, Logger } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 import { Prisma } from '@prisma/client';
 import { Response } from 'express';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter extends BaseExceptionFilter {
+    private readonly logger = new Logger(PrismaClientExceptionFilter.name);
+
     private readonly prismaErrorCodes = {
         P2000: HttpStatus.BAD_REQUEST,
         P2002: HttpStatus.CONFLICT,
@@ -12,7 +14,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     };
 
     catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
-        console.error(exception.message);
+        this.logger.error(exception.message);
 
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
