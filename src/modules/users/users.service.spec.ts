@@ -80,4 +80,15 @@ describe('UsersService', () => {
             });
         });
     });
+
+    describe('delete', () => {
+        it('should be called', async () => {
+            const id = 1;
+
+            await service.delete(id);
+            expect(prismaMock.user.delete).toHaveBeenCalledWith({
+                where: { id },
+            });
+        });
+    });
 });

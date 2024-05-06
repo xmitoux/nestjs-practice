@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
+import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,17 +12,11 @@ import { PrismaService } from '@/common/services/prisma.service';
 describe('UsersController', () => {
     let controller: UsersController;
     let service: UsersService;
-
-    // モック化するサービスの関数
-    const mockService = {
-        // 関数名はサービスと同じにする
-        create: vi.fn().mockImplementation(async (_: Prisma.UserCreateInput) => {}),
-        findAll: vi.fn().mockImplementation(async (_: Prisma.UserCreateInput) => []),
-        findOne: vi.fn().mockImplementation(async (_: number) => {}),
-        update: vi.fn().mockImplementation(async (_1: number, _2: UpdateUserDto) => {}),
-    };
+    let mockService: DeepMockProxy<UsersService>;
 
     beforeEach(async () => {
+        mockService = mockDeep<UsersService>();
+
         const module: TestingModule = await Test.createTestingModule({
             controllers: [UsersController],
             providers: [
@@ -55,6 +50,8 @@ describe('UsersController', () => {
     it('findAll', async () => {
         const orderBy: Prisma.SortOrder = 'asc';
         const where = 'gmail.com';
+        mockService.findAll.mockResolvedValue([]);
+
         await controller.findAll(where, orderBy);
 
         expect(service.findAll).toHaveBeenCalledWith({ orderBy, where });
@@ -73,5 +70,12 @@ describe('UsersController', () => {
         await controller.update({ id }, data);
 
         expect(service.update).toHaveBeenCalledWith(id, data);
+    });
+
+    it('delete', async () => {
+        const id = 1;
+        await controller.delete({ id });
+
+        expect(service.delete).toHaveBeenCalledWith(id);
     });
 });
