@@ -1,32 +1,38 @@
-import { Controller, Get, Param, Post, Body, Delete, Put } from '@nestjs/common';
-import { Post as PostModel } from '@prisma/client';
+import { Controller, Get, Param, Post, Body, Delete, Patch } from '@nestjs/common';
 
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { PostEntity } from './entities/post.entity';
 import { PostsService } from './posts.service';
+
+import { FindOneParam } from '@/common/dto/find-one-param.dto';
 
 @Controller('posts')
 export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 
     @Get('')
-    async findAll(): Promise<PostModel[]> {
-        return this.postsService.posts({});
+    async findAll(): Promise<PostEntity[]> {
+        const posts = await this.postsService.findAll({});
+        return posts.map((post) => new PostEntity(post));
     }
 
     @Get('feed')
-    async getPublishedPosts(): Promise<PostModel[]> {
-        return this.postsService.posts({
+    async findPublishedPosts(): Promise<PostEntity[]> {
+        const posts = await this.postsService.findAll({
             where: { published: true },
         });
+        return posts.map((post) => new PostEntity(post));
     }
 
     @Get(':id')
-    async getPostById(@Param('id') id: number): Promise<PostModel | null> {
-        return this.postsService.post({ id });
+    async findOne(@Param() { id }: FindOneParam): Promise<PostEntity> {
+        return new PostEntity(await this.postsService.findOne(id));
     }
 
     @Get('filtered-posts/:searchString')
-    async getFilteredPosts(@Param('searchString') searchString: string): Promise<PostModel[]> {
-        return this.postsService.posts({
+    async findFilteredPosts(@Param('searchString') searchString: string): Promise<PostEntity[]> {
+        const posts = await this.postsService.findAll({
             where: {
                 OR: [
                     {
@@ -38,30 +44,37 @@ export class PostsController {
                 ],
             },
         });
+
+        return posts.map((post) => new PostEntity(post));
     }
 
     @Post()
-    async createDraft(@Body() postData: { authorEmail: string; content?: string; title: string }): Promise<PostModel> {
-        const { title, content, authorEmail } = postData;
-        return this.postsService.createPost({
-            author: {
-                connect: { email: authorEmail },
-            },
-            content,
-            title,
-        });
+    async create(@Body() createPostDto: CreatePostDto): Promise<PostEntity> {
+        return new PostEntity(await this.postsService.create(createPostDto));
     }
 
-    @Put('publish/:id')
-    async publishPost(@Param('id') id: number): Promise<PostModel> {
-        return this.postsService.updatePost({
-            data: { published: true },
-            where: { id },
-        });
+    @Patch(':id')
+    async update(@Param() { id }: FindOneParam, @Body() updatePostDto: UpdatePostDto): Promise<PostEntity> {
+        return new PostEntity(
+            await this.postsService.update({
+                data: updatePostDto,
+                where: { id },
+            }),
+        );
+    }
+
+    @Patch('publish/:id')
+    async publishPost(@Param() { id }: FindOneParam): Promise<PostEntity> {
+        return new PostEntity(
+            await this.postsService.update({
+                data: { published: true },
+                where: { id },
+            }),
+        );
     }
 
     @Delete(':id')
-    async deletePost(@Param('id') id: number): Promise<PostModel> {
-        return this.postsService.deletePost({ id });
+    async delete(@Param() { id }: FindOneParam): Promise<PostEntity> {
+        return new PostEntity(await this.postsService.delete(id));
     }
 }
