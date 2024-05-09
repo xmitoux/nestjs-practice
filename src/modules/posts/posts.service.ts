@@ -10,9 +10,16 @@ export class PostsService {
     constructor(private prisma: PrismaService) {}
 
     async findOne(id: number): Promise<Post> {
-        return this.prisma.post.findUniqueOrThrow({
+        const post = await this.prisma.post.findUniqueOrThrow({
+            include: {
+                author: true,
+            },
             where: { id },
         });
+
+        console.log(post);
+
+        return post;
     }
 
     async findAll(params: {

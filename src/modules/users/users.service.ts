@@ -9,6 +9,14 @@ export class UsersService {
 
     async findOne(id: number): Promise<User> {
         return this.prisma.user.findUniqueOrThrow({
+            include: {
+                posts: {
+                    select: {
+                        content: true,
+                        title: true,
+                    },
+                },
+            },
             where: { id },
         });
     }
