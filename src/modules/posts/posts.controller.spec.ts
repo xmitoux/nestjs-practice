@@ -4,6 +4,7 @@ import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostEntity } from './entities/post.entity';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
 
@@ -41,6 +42,7 @@ describe('PostsController', () => {
     describe('create', () => {
         it('should be called', async () => {
             const data: CreatePostDto = { authorId: 1, title: '' };
+            mockService.create.mockResolvedValue({} as PostEntity);
             await controller.create(data);
 
             expect(service.create).toHaveBeenCalledWith(data);
@@ -69,6 +71,7 @@ describe('PostsController', () => {
     describe('findOne', () => {
         it('should be called', async () => {
             const id = 1;
+            mockService.findOne.mockResolvedValue({} as PostEntity);
             await controller.findOne({ id });
 
             expect(service.findOne).toHaveBeenCalledWith(id);
@@ -100,6 +103,7 @@ describe('PostsController', () => {
             const id = 1;
             const data: UpdatePostDto = { title: '' };
             const where: Prisma.PostWhereInput = { id };
+            mockService.update.mockResolvedValue({} as PostEntity);
             await controller.update({ id }, data);
 
             expect(service.update).toHaveBeenCalledWith({ data, where });
@@ -111,6 +115,7 @@ describe('PostsController', () => {
             const id = 1;
             const data: Prisma.PostUpdateInput = { published: true };
             const where: Prisma.PostWhereInput = { id };
+            mockService.update.mockResolvedValue({} as PostEntity);
             await controller.publishPost({ id });
 
             expect(service.update).toHaveBeenCalledWith({ data, where });
@@ -120,6 +125,7 @@ describe('PostsController', () => {
     describe('delete', () => {
         it('should be called', async () => {
             const id = 1;
+            mockService.delete.mockResolvedValue({} as PostEntity);
             await controller.delete({ id });
 
             expect(service.delete).toHaveBeenCalledWith(id);

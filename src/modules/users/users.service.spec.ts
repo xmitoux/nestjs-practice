@@ -37,6 +37,14 @@ describe('UsersService', () => {
 
             await service.findOne(id);
             expect(prismaMock.user.findUniqueOrThrow).toHaveBeenCalledWith({
+                include: {
+                    posts: {
+                        select: {
+                            content: true,
+                            title: true,
+                        },
+                    },
+                },
                 where: { id },
             });
         });

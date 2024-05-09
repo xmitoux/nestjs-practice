@@ -4,6 +4,7 @@ import { DeepMockProxy, mockDeep } from 'vitest-mock-extended';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -41,6 +42,7 @@ describe('UsersController', () => {
     it('create', async () => {
         const data: CreateUserDto = { email: 'updated@hoge.mail', name: 'hoge', password: 'pass' };
         // コントローラを実行
+        mockService.create.mockResolvedValue({} as UserEntity);
         await controller.create(data);
 
         // コントローラ内でサービスの関数が実行されたか(実際に動くのはモック)
@@ -59,6 +61,7 @@ describe('UsersController', () => {
 
     it('findOne', async () => {
         const id = 1;
+        mockService.findOne.mockResolvedValue({} as UserEntity);
         await controller.findOne({ id });
 
         expect(service.findOne).toHaveBeenCalledWith(id);
@@ -67,6 +70,7 @@ describe('UsersController', () => {
     it('update', async () => {
         const id = 1;
         const data: UpdateUserDto = { email: 'updated@hoge.mail', name: 'updated' };
+        mockService.update.mockResolvedValue({} as UserEntity);
         await controller.update({ id }, data);
 
         expect(service.update).toHaveBeenCalledWith(id, data);
@@ -74,6 +78,7 @@ describe('UsersController', () => {
 
     it('delete', async () => {
         const id = 1;
+        mockService.delete.mockResolvedValue({} as UserEntity);
         await controller.delete({ id });
 
         expect(service.delete).toHaveBeenCalledWith(id);

@@ -46,7 +46,12 @@ describe('PostsService', () => {
             const id = 1;
             await service.findOne(id);
 
-            expect(prismaMock.post.findUniqueOrThrow).toHaveBeenCalledWith({ where: { id } });
+            expect(prismaMock.post.findUniqueOrThrow).toHaveBeenCalledWith({
+                include: {
+                    author: true,
+                },
+                where: { id },
+            });
         });
     });
 
