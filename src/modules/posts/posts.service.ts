@@ -17,8 +17,6 @@ export class PostsService {
             where: { id },
         });
 
-        console.log(post);
-
         return post;
     }
 
