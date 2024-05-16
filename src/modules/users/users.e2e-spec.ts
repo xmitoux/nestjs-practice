@@ -1,5 +1,4 @@
-import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 // https://docs.nestjs.com/recipes/swc#update-imports-in-e2e-tests
 import request from 'supertest';
@@ -7,41 +6,23 @@ import request from 'supertest';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { UsersController } from './users.controller';
 import { UsersModule } from './users.module';
-import { UsersService } from './users.service';
 
-import { PrismaClientExceptionFilter } from '@/common/filters/prisma-client-exception.filter';
-import { PrismaService } from '@/common/services/prisma.service';
-import { resetTable } from '@/common/utils/test-utils';
+import { randomSchemaId } from '@/common/utils/test/setup-e2e';
+import { createTestingModule, resetTable } from '@/common/utils/test/test-utils';
 
-describe('AppController (e2e)', () => {
+describe('UsersController (e2e)', () => {
     let app: INestApplication;
-
-    beforeAll(async () => await resetTable(['Post', 'User']));
 
     beforeEach(async () => {
         const moduleFixture = await Test.createTestingModule({
-            controllers: [UsersController],
             imports: [UsersModule],
-            providers: [UsersService, PrismaService],
         }).compile();
 
-        app = moduleFixture.createNestApplication();
-        app.useGlobalPipes(
-            new ValidationPipe({
-                forbidNonWhitelisted: true,
-                transform: true,
-                transformOptions: { enableImplicitConversion: true },
-                whitelist: true,
-            }),
-        );
-
-        const { httpAdapter } = app.get(HttpAdapterHost);
-        app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
-
-        await app.init();
+        app = await createTestingModule(moduleFixture);
     });
+
+    afterEach(async () => await resetTable(['User'], randomSchemaId));
 
     describe('Users API e2e', () => {
         const createUserDto: CreateUserDto = {
@@ -52,12 +33,16 @@ describe('AppController (e2e)', () => {
 
         const userEntity: Partial<UserEntity> = { id: 1, ...createUserDto };
 
+        const createTestUser = async () => {
+            return await request(app.getHttpServer())
+                .post('/users')
+                .set('Accept', 'application/json')
+                .send(createUserDto);
+        };
+
         describe('create', () => {
             it('OK /users (POST)', async () => {
-                const res = await request(app.getHttpServer())
-                    .post('/users')
-                    .set('Accept', 'application/json')
-                    .send(createUserDto);
+                const res = await createTestUser();
 
                 expect(res.status).toEqual(HttpStatus.CREATED);
 
@@ -68,6 +53,8 @@ describe('AppController (e2e)', () => {
 
         describe('findAll', () => {
             it('OK /users (GET)', async () => {
+                await createTestUser();
+
                 const res = await request(app.getHttpServer()).get('/users');
 
                 expect(res.status).toEqual(HttpStatus.OK);
@@ -79,6 +66,8 @@ describe('AppController (e2e)', () => {
 
         describe('findOne', () => {
             it('OK /users/:id (GET)', async () => {
+                await createTestUser();
+
                 const res = await request(app.getHttpServer()).get('/users/1');
 
                 expect(res.status).toEqual(HttpStatus.OK);
@@ -102,6 +91,8 @@ describe('AppController (e2e)', () => {
                     ...updateUserDto,
                 };
 
+                await createTestUser();
+
                 const res = await request(app.getHttpServer())
                     .patch('/users/1')
                     .set('Accept', 'application/json')
@@ -116,6 +107,8 @@ describe('AppController (e2e)', () => {
 
         describe('delete', () => {
             it('OK /users/:id (DELETE)', async () => {
+                await createTestUser();
+
                 const res = await request(app.getHttpServer()).delete('/users/1');
 
                 expect(res.status).toEqual(HttpStatus.OK);
