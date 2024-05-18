@@ -12,7 +12,7 @@ import { PostEntity } from './entities/post.entity';
 import { PostsModule } from './posts.module';
 
 import { randomSchemaId } from '@/common/utils/test/setup-e2e';
-import { createTestingModule, resetTable } from '@/common/utils/test/test-utils';
+import { setupTestingModule, resetTable } from '@/common/utils/test/test-utils';
 
 describe('PostsController (e2e)', () => {
     let app: INestApplication;
@@ -22,7 +22,8 @@ describe('PostsController (e2e)', () => {
             imports: [PostsModule, UsersModule],
         }).compile();
 
-        app = await createTestingModule(moduleFixture);
+        app = moduleFixture.createNestApplication();
+        await setupTestingModule(app);
     });
 
     afterEach(async () => await resetTable(['Post', 'User'], randomSchemaId));

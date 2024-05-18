@@ -1,6 +1,5 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
-import { TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 
 import { prisma } from './setup-e2e';
@@ -28,9 +27,7 @@ const convertModelNameToTableName = (modelName: Prisma.ModelName): string => {
     return `${snakeCase}s`;
 };
 
-export const createTestingModule = async (moduleFixture: TestingModule): Promise<INestApplication> => {
-    const app = moduleFixture.createNestApplication();
-
+export const setupTestingModule = async (app: INestApplication): Promise<INestApplication> => {
     app.useGlobalPipes(
         new ValidationPipe({
             forbidNonWhitelisted: true,

@@ -9,7 +9,7 @@ import { UserEntity } from './entities/user.entity';
 import { UsersModule } from './users.module';
 
 import { randomSchemaId } from '@/common/utils/test/setup-e2e';
-import { createTestingModule, resetTable } from '@/common/utils/test/test-utils';
+import { setupTestingModule, resetTable } from '@/common/utils/test/test-utils';
 
 describe('UsersController (e2e)', () => {
     let app: INestApplication;
@@ -19,7 +19,8 @@ describe('UsersController (e2e)', () => {
             imports: [UsersModule],
         }).compile();
 
-        app = await createTestingModule(moduleFixture);
+        app = moduleFixture.createNestApplication();
+        await setupTestingModule(app);
     });
 
     afterEach(async () => await resetTable(['User'], randomSchemaId));
