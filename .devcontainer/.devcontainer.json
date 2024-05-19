@@ -1,0 +1,11 @@
+{
+    "name": "NestJS Practice",
+    "dockerComposeFile": "../compose.yaml",
+    "service": "backend",
+    "workspaceFolder": "/app/backend",
+    "customizations": {
+        "vscode": {
+            "extensions": ["ms-azuretools.vscode-docker", "esbenp.prettier-vscode"]
+        }
+    }
+}

@@ -1,0 +1,26 @@
+services:
+  postgres_db:
+    image: postgres:16
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - data:/var/lib/postgresql/data
+      
+  frontend:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/frontend/node_modules
+    init: true
+    depends_on:
+      - postgres_db
+
+volumes:
+  data:
