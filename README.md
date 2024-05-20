@@ -2,6 +2,12 @@
 
 NestJSの公式ドキュメントを読みながら色々やってみたリポジトリ
 
+## 開発環境構築手順
+
+1. VSCodeでプロジェクトを開き、コンテナで開き直す(devcontainerの起動)
+2. `npx prisma migrate dev`
+3. `pnpm start:dev`
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
