@@ -5,7 +5,7 @@
     "workspaceFolder": "/app/backend",
     "customizations": {
         "vscode": {
-            "extensions": ["ms-azuretools.vscode-docker", "esbenp.prettier-vscode"]
+            "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
         }
     }
 }
