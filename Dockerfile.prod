@@ -4,6 +4,7 @@ WORKDIR /app/backend
 
 COPY --chown=node:node package.json pnpm-lock.yaml
 COPY --chown=node:node prisma ./prisma/
+RUN ls
 
 RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile
