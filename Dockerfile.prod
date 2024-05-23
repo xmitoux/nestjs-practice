@@ -1,15 +1,54 @@
-FROM node:lts
+### base ###
+# FROM node:lts as base
+FROM node:20.13-bullseye-slim as base
+ENV NODE_ENV=production
+ENV DATABASE_URL=postgres://postgres.bibjqyafzulueizuahxw:fHiZFiH3m3l1NNQY@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres
 
-WORKDIR /app/backend
-
-COPY --chown=node:node . .
-
-RUN npm install -g pnpm \
-    && pnpm install --frozen-lockfile \
-    && pnpm build
-
-USER node
+WORKDIR /app
 
 EXPOSE 3000
+
+# package.jsonはどのステージでも必要 /aap/package.json
+COPY --chown=node:node package.json pnpm-lock.yaml ./
+# prismaもどのステージでも必要 /aap/prisma
+COPY --chown=node:node prisma ./prisma/
+
+# pnpmも必要 dependenciesのインストールも必要
+RUN npm install -g pnpm \
+    && pnpm install --prod --frozen-lockfile
+
+### dev ###
+FROM base as dev
+ENV NODE_ENV=development
+
+# devにはdevDependenciesのインストールが必要
+RUN pnpm install --dev --frozen-lockfile
+
+# リポジトリのルートにあるファイルもすべて必要
+COPY --chown=node:node . .
+
+# pnpmの権限エラーが出るので最後にユーザ変更
+USER node
+
+### builder ###
+FROM base as builder
+
+# ビルドするのでリポジトリのルートにあるファイルがすべて必要
+COPY --chown=node:node . .
+
+RUN pnpm build
+
+### prod ###
+FROM base as prod
+
+# ビルド後のdistをもってくる /app/dist
+COPY --chown=node:node --from=builder /app/dist ./dist
+
+# 以下はたぶんbaseで用意してるので不要
+# COPY --chown=node:node --from=builder /app/node_modules ./node_modules
+# COPY --chown=node:node --from=builder /app/package.json ./
+# COPY --chown=node:node --from=builder /app/prisma ./prisma
+
+USER node
 
 CMD ["pnpm", "start:migrate:prod"]
