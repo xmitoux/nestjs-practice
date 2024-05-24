@@ -1,53 +1,50 @@
-### base ###
+##### base #####
 FROM node:20.13-bullseye-slim as base
 
 # pnpmの設定
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN corepack enable && \
+    # pnpmのstore-dirをインストールディレクトリに設定
+    pnpm config set store-dir $PNPM_HOME/store/v3 --global
 
 WORKDIR /app
-
-# # package.jsonはどのステージでも必要 /aap/package.json
-# COPY --chown=node:node package.json pnpm-lock.yaml ./
-# # prismaもどのステージでも必要 /aap/prisma
-# COPY --chown=node:node prisma ./prisma/
-# リポジトリのルートにあるファイルもすべて必要
-COPY --chown=node:node . .
-# すべての依存関係をインストール
-RUN pnpm install --frozen-lockfile && pnpm config set store-dir $PNPM_HOME/store/v3 --global
-
-### dev ###
-FROM base as dev
-ENV NODE_ENV=development
 EXPOSE 3000
 
-# # リポジトリのルートにあるファイルもすべて必要
-# COPY --chown=node:node . .
+# package.jsonはどのステージでも必要 /aap/package.json
+COPY  --chown=node:node package.json pnpm-lock.yaml ./
+# prismaもどのステージでも必要 /aap/prisma
+COPY  --chown=node:node prisma ./prisma/
+
+##### dev #####
+FROM base as dev
+ENV NODE_ENV=development
+
+# すべての依存関係をインストール
+RUN pnpm install --frozen-lockfile
+# リポジトリのルートにあるファイルもすべて必要
+COPY  . .
 
 # dev環境はrootでも問題ない
 # USER node
 
-### builder ###
+##### builder #####
 FROM base as builder
+ENV NODE_ENV=production
 
-# dependenciesのみをインストール(--prodオプションでdevは削除される)
+# dependenciesのみをインストール
 RUN pnpm install --prod --frozen-lockfile
-# # ビルドするのでリポジトリのルートにあるファイルがすべて必要
-# COPY --chown=node:node . .
+# ビルドするのでリポジトリのルートにあるファイルがすべて必要
+COPY  . .
 
 RUN pnpm build
 
-### prod(新しいイメージなので途中のアーティファクトはない) ###
-FROM node:20.13-bullseye-slim as prod
+##### prod #####
+FROM base as prod
 ENV NODE_ENV=production
-WORKDIR /app
-EXPOSE 3000
 
 # ビルド後のdistをもってくる
 COPY --chown=node:node --from=builder /app/dist ./dist
-COPY --chown=node:node --from=builder /app/package.json ./
-COPY --chown=node:node --from=builder /app/prisma ./prisma
 COPY --chown=node:node --from=builder /app/node_modules ./node_modules
 
 USER node
