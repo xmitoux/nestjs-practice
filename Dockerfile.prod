@@ -39,9 +39,12 @@ COPY  . .
 
 RUN pnpm build
 
-##### prod #####
-FROM base as prod
+##### prod(新しいイメージなので途中のアーティファクトはない) #####
+FROM node:20.13-bullseye-slim as prod
 ENV NODE_ENV=production
+
+WORKDIR /app
+EXPOSE 3000
 
 # ビルド後のdistをもってくる
 COPY --chown=node:node --from=builder /app/dist ./dist
@@ -49,4 +52,4 @@ COPY --chown=node:node --from=builder /app/node_modules ./node_modules
 
 USER node
 
-CMD ["pnpm", "start:migrate:prod"]
+CMD ["npm", "run", "start:migrate:prod"]
