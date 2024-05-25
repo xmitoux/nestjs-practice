@@ -1,4 +1,5 @@
 FROM node:20.13-bullseye-slim
+ENV NODE_ENV=production
 
 WORKDIR /app/backend
 
