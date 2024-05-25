@@ -2,10 +2,14 @@
 FROM node:20.13-bullseye-slim as builder
 WORKDIR /app
 
-COPY --chown=node:node . .
+COPY --chown=node:node package.json pnpm-lock.yaml ./
+COPY --chown=node:node prisma ./prisma/
+
 RUN npm install -g pnpm \
     && pnpm install --frozen-lockfile \
     && pnpm build
+
+COPY --chown=node:node . .
 
 ##### prod #####
 FROM node:20.13-bullseye-slim as prod
