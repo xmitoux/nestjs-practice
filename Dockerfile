@@ -1,16 +1,22 @@
-FROM node:20.13-bullseye-slim
-# ENV NODE_ENV=production
-
-WORKDIR /app/backend
+##### builder #####
+FROM node:20.13-bullseye-slim as builder
+WORKDIR /app
 
 COPY --chown=node:node . .
-
 RUN npm install -g pnpm \
     && pnpm install --frozen-lockfile \
     && pnpm build
 
-USER node
-
+##### prod #####
+FROM node:20.13-bullseye-slim as prod
+WORKDIR /app
 EXPOSE 3000
 
-CMD ["pnpm", "start:migrate:prod"]
+COPY --chown=node:node --from=builder /app/dist ./dist
+COPY --chown=node:node --from=builder /app/node_modules ./node_modules
+COPY --chown=node:node --from=builder /app/package.json  ./
+COPY --chown=node:node --from=builder /app/prisma ./prisma/
+
+USER node
+
+CMD ["npm", "run", "start:migrate:prod"]
