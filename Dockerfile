@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:20.13-bullseye-slim
 
 WORKDIR /app/backend
 
