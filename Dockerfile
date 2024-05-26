@@ -30,6 +30,7 @@ RUN npm install -g pnpm && \
 FROM node:20.13-bullseye-slim as prod
 WORKDIR /app
 EXPOSE 3000
+ENV NODE_ENV=production
 
 COPY --chown=node:node --from=builder /app/dist ./dist
 COPY --chown=node:node --from=builder /app/node_modules ./node_modules
