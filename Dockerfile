@@ -5,17 +5,21 @@ EXPOSE 3000
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN npm install -g pnpm && \
-    pnpm config set store-dir $PNPM_HOME/store/v3 --global
+RUN npm install -g pnpm
 
 ##### dev #####
 FROM dev-base as dev
 ENV NODE_ENV=development
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY --chown=node:node package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile && \
+    chown -R node:node $PNPM_HOME && \
+    chown -R node:node ./node_modules
+COPY --chown=node:node  . .
 
-COPY  . .
+USER node
+
+RUN pnpm config set store-dir $PNPM_HOME/store --global
 
 ##### builder #####
 FROM node:20.13-bullseye-slim as builder
