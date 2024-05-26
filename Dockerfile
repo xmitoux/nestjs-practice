@@ -3,8 +3,8 @@ FROM node:20.13-bullseye-slim as base
 WORKDIR /app
 EXPOSE 3000
 
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+# ENV PNPM_HOME="/pnpm"
+# ENV PATH="$PNPM_HOME:$PATH"
 RUN npm install -g pnpm && \
     pnpm config set store-dir $PNPM_HOME/store/v3 --global
 
