@@ -2,8 +2,10 @@
 FROM node:20.13 as base
 WORKDIR /app
 
-COPY --chown=node:node . .
-RUN npm install -g pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN npm install -g pnpm && \
+    pnpm config set store-dir $PNPM_HOME/store/v3 --global
 
 ##### dev #####
 FROM base as dev
