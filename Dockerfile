@@ -1,6 +1,7 @@
 ##### base #####
-FROM node:20.13 as base
+FROM node:20.13-bullseye-slim as base
 WORKDIR /app
+EXPOSE 3000
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -10,9 +11,8 @@ RUN npm install -g pnpm && \
 ##### dev #####
 FROM base as dev
 ENV NODE_ENV=development
-EXPOSE 3000
 
-COPY --chown=node:node package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY  . .
@@ -21,7 +21,7 @@ COPY  . .
 FROM base as builder
 ENV NODE_ENV=production
 
-COPY --chown=node:node . .
+COPY . .
 RUN pnpm install --prod --frozen-lockfile \
     && pnpm build
 
