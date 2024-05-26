@@ -19,7 +19,7 @@ COPY  . .
 
 ##### builder #####
 FROM base as builder
-ENV NODE_ENV=production
+# ENV NODE_ENV=production
 
 COPY . .
 RUN pnpm install --prod --frozen-lockfile \
