@@ -21,7 +21,7 @@ COPY  . .
 FROM node:20.13-bullseye-slim as builder
 WORKDIR /app
 
-COPY --chown=node:node . .
+COPY . .
 RUN npm install -g pnpm && \
     pnpm install --frozen-lockfile && \
     pnpm build
