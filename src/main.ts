@@ -26,7 +26,7 @@ async function bootstrap() {
     app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
     await app.listen(3000, () => {
-        console.log(`Example app listening on port ${process.env.NODE_ENV}`)
+        console.log(`My awesome NestJs app is listening on port ${process.env.NODE_ENV}`);
     });
 }
 bootstrap();
