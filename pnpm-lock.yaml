@@ -47,9 +47,6 @@ importers:
       pino-http:
         specifier: ^9.0.0
         version: 9.0.0
-      pino-pretty:
-        specifier: ^11.0.0
-        version: 11.0.0
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -102,6 +99,9 @@ importers:
       eslint-plugin-unused-imports:
         specifier: ^3.1.0
         version: 3.1.0(@typescript-eslint/eslint-plugin@7.7.1(@typescript-eslint/parser@7.7.1(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)
+      pino-pretty:
+        specifier: ^11.1.0
+        version: 11.1.0
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
@@ -2711,8 +2711,8 @@ packages:
   pino-http@9.0.0:
     resolution: {integrity: sha512-Q9QDNEz0vQmbJtMFjOVr2c9yL92vHudjmr3s3m6J1hbw3DBGFZJm3TIj9TWyynZ4GEsEA9SOtni4heRUr6lNOg==}
 
-  pino-pretty@11.0.0:
-    resolution: {integrity: sha512-YFJZqw59mHIY72wBnBs7XhLGG6qpJMa4pEQTRgEPEbjIYbng2LXEZZF1DoyDg9CfejEy8uZCyzpcBXXG0oOCwQ==}
+  pino-pretty@11.1.0:
+    resolution: {integrity: sha512-PjBzFL7IMSl1YkS9cSVWC+4gONmW0Fi+fvUzy74zK6RJHk4RkfW+e22NydRrGEtBRa5n6/oPNLPqjUeQrzqcLQ==}
     hasBin: true
 
   pino-std-serializers@6.2.2:
@@ -3034,6 +3034,9 @@ packages:
 
   sonic-boom@3.8.1:
     resolution: {integrity: sha512-y4Z8LCDBuum+PBP3lSV7RHrXscqksve/bi0as7mhwVnBW+/wUqKT/2Kb7um8yqcFy0duYbbPxzt89Zy2nOCaxg==}
+
+  sonic-boom@4.0.1:
+    resolution: {integrity: sha512-hTSD/6JMLyT4r9zeof6UtuBDpjJ9sO08/nmS5djaA9eozT9oOlNdpXSnzcgj4FTqpk3nkLrs61l4gip9r1HCrQ==}
 
   sort-keys-length@1.0.1:
     resolution: {integrity: sha512-GRbEOUqCxemTAk/b32F2xa8wDTs+Z1QHOkbhJDQTvv/6G3ZkbJ+frYWsTcc7cBB3Fu4wy4XlLCuNtJuMn7Gsvw==}
@@ -6340,7 +6343,7 @@ snapshots:
       pino-std-serializers: 6.2.2
       process-warning: 3.0.0
 
-  pino-pretty@11.0.0:
+  pino-pretty@11.1.0:
     dependencies:
       colorette: 2.0.20
       dateformat: 4.6.3
@@ -6354,7 +6357,7 @@ snapshots:
       pump: 3.0.0
       readable-stream: 4.5.2
       secure-json-parse: 2.7.0
-      sonic-boom: 3.8.1
+      sonic-boom: 4.0.1
       strip-json-comments: 3.1.1
 
   pino-std-serializers@6.2.2: {}
@@ -6706,6 +6709,10 @@ snapshots:
   slash@3.0.0: {}
 
   sonic-boom@3.8.1:
+    dependencies:
+      atomic-sleep: 1.0.0
+
+  sonic-boom@4.0.1:
     dependencies:
       atomic-sleep: 1.0.0
 
