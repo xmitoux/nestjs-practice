@@ -4,12 +4,7 @@
     "sourceRoot": "src",
     "compilerOptions": {
         "deleteOutDir": true,
-        "builder": {
-            "type": "swc",
-            "options": {
-                "swcrcPath": ".build.swcrc"
-            }
-        },
+        "builder": "swc",
         "typeCheck": true
     }
 }

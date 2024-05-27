@@ -1,13 +1,16 @@
 services:
   backend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${DOCKER_BUILD_TARGET_STAGE}
     environment:
       DATABASE_URL: ${DATABASE_URL}
     ports:
       - "3000:3000"
     volumes:
-      - .:/app/backend
-      - /app/backend/node_modules
+      - .:/app
+      - node_modules:/app/node_modules
     init: true
     tty: true
     depends_on:
@@ -26,3 +29,4 @@ services:
 
 volumes:
   data:
+  node_modules:
