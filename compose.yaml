@@ -3,9 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: ${DOCKER_BUILD_TARGET_STAGE}
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
+      target: dev
     ports:
       - "3000:3000"
     volumes:
@@ -19,8 +17,8 @@ services:
   postgres_db:
     image: postgres:16
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     restart: always
