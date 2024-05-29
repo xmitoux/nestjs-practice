@@ -3,5 +3,3 @@ node_modules
 .gitignore
 *.md
 dist
-vitest.config.*
-**/test/
