@@ -2,7 +2,6 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 // https://docs.nestjs.com/recipes/swc#update-imports-in-e2e-tests
 import request from 'supertest';
-import { describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersModule } from '../users/users.module';

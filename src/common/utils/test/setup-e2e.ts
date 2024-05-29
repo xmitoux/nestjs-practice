@@ -2,7 +2,6 @@ import { execSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 
 import { PrismaClient } from '@prisma/client';
-import { afterAll, beforeAll } from 'vitest';
 
 export const prisma = new PrismaClient();
 
