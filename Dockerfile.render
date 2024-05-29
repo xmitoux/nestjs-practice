@@ -1,0 +1,25 @@
+##### builder #####
+FROM node:20.13-bullseye-slim as builder
+WORKDIR /app
+# Render側で設定するので不要(むしろ設定してるとエラーになる？)
+# ENV NODE_ENV=production
+
+COPY . .
+RUN npm install -g pnpm && \
+    pnpm install --frozen-lockfile && \
+    pnpm build
+
+##### prod #####
+FROM node:20.13-bullseye-slim as prod
+WORKDIR /app
+EXPOSE 3000
+# ENV NODE_ENV=production
+
+COPY --chown=node:node --from=builder /app/dist ./dist
+COPY --chown=node:node --from=builder /app/node_modules ./node_modules
+COPY --chown=node:node --from=builder /app/package.json  ./
+COPY --chown=node:node --from=builder /app/prisma ./prisma/
+
+USER node
+
+CMD ["npm", "run", "start:migrate:prod"]
