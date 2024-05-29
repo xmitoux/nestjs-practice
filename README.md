@@ -3,11 +3,21 @@
 NestJSの公式ドキュメントを読みながら色々やってみたリポジトリ
 
 ## 開発環境構築手順
-
+- .envをプロジェクトのルートに用意
 1. VSCodeでプロジェクトを開き、コンテナで開き直す(devcontainerの起動)
-2. `npx prisma migrate dev`
+2. `pnpm migrate dev`
 3. `pnpm start:dev`
-
+  
+## 本番環境用ビルド手順
+- .env.productionをプロジェクトのルートに用意
+1. Dockerfileをビルド
+    ```
+    docker build . -t <image-name> --target prod
+    ```
+2. コンテナを起動
+    ```
+    docker run -it --rm --name <container-name> -p 3000:3000 --env-file ./.env.production <image-name>
+    ``` 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
