@@ -4,6 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: dev
+    environment:
+      - TZ=Asia/Tokyo
     ports:
       - "3000:3000"
     volumes:
