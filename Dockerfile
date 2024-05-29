@@ -24,6 +24,7 @@ RUN pnpm config set store-dir $PNPM_HOME/store --global
 ##### builder #####
 FROM node:20.13-bullseye-slim as builder
 WORKDIR /app
+ENV NODE_ENV=production
 
 COPY . .
 RUN npm install -g pnpm && \
