@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY . .
 RUN npm install -g pnpm && \
-    pnpm install --frozen-lockfile && \
+    pnpm install --prod --frozen-lockfile && \
     pnpm build
 
 ##### prod #####
