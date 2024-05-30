@@ -105,9 +105,6 @@ importers:
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
-      prisma:
-        specifier: ^5.13.0
-        version: 5.13.0
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -3967,9 +3964,11 @@ snapshots:
     optionalDependencies:
       prisma: 5.13.0
 
-  '@prisma/debug@5.13.0': {}
+  '@prisma/debug@5.13.0':
+    optional: true
 
-  '@prisma/engines-version@5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b': {}
+  '@prisma/engines-version@5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b':
+    optional: true
 
   '@prisma/engines@5.13.0':
     dependencies:
@@ -3977,16 +3976,19 @@ snapshots:
       '@prisma/engines-version': 5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
       '@prisma/fetch-engine': 5.13.0
       '@prisma/get-platform': 5.13.0
+    optional: true
 
   '@prisma/fetch-engine@5.13.0':
     dependencies:
       '@prisma/debug': 5.13.0
       '@prisma/engines-version': 5.13.0-23.b9a39a7ee606c28e3455d0fd60e78c3ba82b1a2b
       '@prisma/get-platform': 5.13.0
+    optional: true
 
   '@prisma/get-platform@5.13.0':
     dependencies:
       '@prisma/debug': 5.13.0
+    optional: true
 
   '@rollup/pluginutils@5.1.0(rollup@4.17.2)':
     dependencies:
@@ -6419,6 +6421,7 @@ snapshots:
   prisma@5.13.0:
     dependencies:
       '@prisma/engines': 5.13.0
+    optional: true
 
   process-nextick-args@2.0.1: {}
 
